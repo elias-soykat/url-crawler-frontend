@@ -18,9 +18,14 @@ export default function SignupPage() {
         return;
       }
 
+      if (password.length < 8) {
+        setError("Password must be at least 8 characters long");
+        return;
+      }
+
       const token = await signupApi(username, password);
       login(token);
-      navigate("/");
+      navigate("/login");
     } catch (err) {
       setError("Invalid credentials");
     }
@@ -54,7 +59,9 @@ export default function SignupPage() {
           />
         </div>
         {error && (
-          <div className="my-2 pb-2 text-red-600 text-sm text-left">{error}</div>
+          <div className="my-2 pb-2 text-red-600 text-sm text-left">
+            {error}
+          </div>
         )}
         <button
           type="submit"
@@ -64,7 +71,10 @@ export default function SignupPage() {
         </button>
         <p className="text-sm text-center mt-4">
           Already have an account?{" "}
-          <Link to="/login" className="text-blue-600 hover:text-blue-700 underline">
+          <Link
+            to="/login"
+            className="text-blue-600 hover:text-blue-700 underline"
+          >
             Login
           </Link>
         </p>

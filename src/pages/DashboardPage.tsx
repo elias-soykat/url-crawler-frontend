@@ -3,6 +3,7 @@ import {
   PlusIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
+import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { addURL, bulkAction, fetchURLs, URLItem } from "../api/api";
@@ -48,7 +49,13 @@ export default function DashboardPage() {
       setAddress("");
       loadURLs();
     } catch (err) {
-      setAddError("Could not add URL. Invalid?");
+      if (err instanceof AxiosError) {
+        setAddError(
+          err.response?.data.error || "Could not add URL. Invalid URL?"
+        );
+      } else {
+        setAddError("Could not add URL. Invalid URL?");
+      }
     }
   }
 
@@ -96,7 +103,7 @@ export default function DashboardPage() {
           </button>
         </form>
         {addError && (
-          <div className="mb-2 text-red-600 text-sm">{addError}</div>
+          <div className="my-4 text-red-600 text-sm text-left">{addError}</div>
         )}
         <div className="mb-4 flex gap-2">
           <input
@@ -109,7 +116,7 @@ export default function DashboardPage() {
             className="flex items-center gap-1 px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
             onClick={() => loadURLs()}
           >
-            Refresh
+            Search
           </button>
         </div>
         <div className="mb-4 flex gap-2">

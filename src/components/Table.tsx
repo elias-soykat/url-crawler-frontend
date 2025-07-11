@@ -60,16 +60,21 @@ export function Table({
     {
       accessorKey: "title",
       header: () => "Title",
-      cell: (info) => info.getValue() as string,
+      cell: (info) => {
+        return info.row.original.title || "-";
+      },
     },
     {
       accessorKey: "address",
       header: () => "URL",
-      cell: (info) => (
-        <span className="text-xs text-gray-700">
-          {info.getValue() as string}
-        </span>
-      ),
+      cell: (info) => {
+        const url = info.getValue() as string;
+        return (
+          <span className="text-xs text-gray-700">
+            {url.length > 40 ? url.slice(0, 40) + "..." : url}
+          </span>
+        );
+      },
     },
     {
       accessorKey: "html_version",
@@ -139,6 +144,13 @@ export function Table({
       </div>
     );
 
+  if (data.length === 0)
+    return (
+      <div className="flex items-center justify-center p-6 sm:p-10">
+        <h4 className="text-gray-500">No data</h4>
+      </div>
+    );
+
   return (
     <div className="overflow-x-auto border rounded bg-white">
       <table className="min-w-full">
@@ -148,7 +160,7 @@ export function Table({
               {hg.headers.map((header, i) => (
                 <th
                   key={header.id}
-                  className="px-2 py-2 text-left font-medium text-sm"
+                  className="px-2 py-2 text-center font-medium text-sm"
                 >
                   {header.isPlaceholder
                     ? null
@@ -169,7 +181,7 @@ export function Table({
               onClick={() => onRowClick(row.original.id)}
             >
               {row.getVisibleCells().map((cell, i) => (
-                <td key={cell.id} className="px-2 py-2 text-sm">
+                <td key={cell.id} className="px-2 py-2 text-sm text-center">
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
               ))}

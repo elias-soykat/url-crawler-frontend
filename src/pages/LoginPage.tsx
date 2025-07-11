@@ -21,7 +21,7 @@ export default function LoginPage() {
       const token = await loginApi(username, password);
 
       login(token);
-      navigate("/");
+      navigate("/dashboard");
     } catch (err) {
       setError("Invalid credentials");
     }
