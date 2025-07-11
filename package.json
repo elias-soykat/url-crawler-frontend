@@ -1,0 +1,35 @@
+{
+  "name": "sykell-url-crawler-frontend",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Frontend for Sykell URL crawler test task",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@heroicons/react": "^2.0.18",
+    "@tanstack/react-table": "^8.13.1",
+    "axios": "^1.6.7",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.22.3",
+    "recharts": "^2.9.0"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.1.4",
+    "@testing-library/react": "^14.2.2",
+    "@types/jest": "^29.5.10",
+    "@types/react": "^18.3.8",
+    "@types/react-dom": "^18.3.4",
+    "@vitejs/plugin-react": "^4.2.1",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.35",
+    "tailwindcss": "^3.4.3",
+    "typescript": "^5.4.5",
+    "vite": "^5.2.8",
+    "vitest": "^1.4.0"
+  }
+}
