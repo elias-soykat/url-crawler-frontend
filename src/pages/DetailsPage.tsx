@@ -51,7 +51,7 @@ export default function DetailsPage() {
           <ArrowLeftIcon className="w-4 h-4" />
           Back
         </button>
-        <h1 className="text-xl font-bold">
+        <h1 className="text-sm ml-4 sm:ml-0 sm:text-lg font-bold">
           URL Details for "{data.title || data.address}"
         </h1>
         <span />
@@ -154,7 +154,7 @@ export default function DetailsPage() {
                   <tr key={i}>
                     <td className="px-2 py-1 break-all">{bl.url}</td>
                     <td className="px-2 py-1">{bl.code}</td>
-                    <td className="px-2 py-1">{bl.type}</td>
+                    <td className="px-2 py-1">{bl.type || "Unknown"}</td>
                   </tr>
                 ))}
               </tbody>
