@@ -1,8 +1,18 @@
-import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { fetchURLDetails, URLItem } from "../api/api";
-import { PieChart, Pie, Cell, Tooltip, BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  Bar,
+  BarChart,
+  Cell,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
+import { fetchURLDetails, URLItem } from "../api/api";
 
 export default function DetailsPage() {
   const { id } = useParams();
@@ -41,21 +51,29 @@ export default function DetailsPage() {
           <ArrowLeftIcon className="w-4 h-4" />
           Back
         </button>
-        <h1 className="text-xl font-bold">URL Details</h1>
+        <h1 className="text-xl font-bold">
+          URL Details for "{data.title || data.address}"
+        </h1>
         <span />
       </header>
-      <main className="max-w-5xl mx-auto px-4 py-8">
+      <main className="max-w-5xl mx-auto px-4 py-8 sm:py-10">
         <div className="bg-white rounded shadow p-6 mb-6">
-          <h2 className="text-lg font-bold mb-1">{data.title || data.address}</h2>
-          <div className="text-sm mb-2 text-gray-700">{data.address}</div>
+          <h2 className="text-lg font-bold mb-2">
+            {data.title || data.address}
+          </h2>
+          <div className="text-sm mb-4 text-gray-700">{data.address}</div>
           <div className="grid grid-cols-2 gap-6 mb-4">
-            <div className="flex flex-col gap-2">
-              <div>HTML Version: <span className="font-semibold">{data.html_version}</span></div>
+            <div className="flex flex-col gap-3">
+              <div>
+                HTML Version:{" "}
+                <span className="font-semibold">{data.html_version}</span>
+              </div>
               <div>
                 Headings:{" "}
                 {Object.entries(data.heading_counts || {}).map(([key, val]) => (
                   <span key={key} className="mr-2">
-                    <span className="font-semibold">{key.toUpperCase()}</span>: {val}
+                    <span className="font-semibold">{key.toUpperCase()}</span>:{" "}
+                    {val}
                   </span>
                 ))}
               </div>
@@ -84,7 +102,9 @@ export default function DetailsPage() {
                 </span>
               </div>
               {data.error && (
-                <div className="text-red-600 font-bold">Error: {data.error}</div>
+                <div className="text-red-600 font-bold">
+                  Error: {data.error}
+                </div>
               )}
             </div>
             <div>

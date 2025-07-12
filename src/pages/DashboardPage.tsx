@@ -14,6 +14,7 @@ export default function DashboardPage() {
   const [urls, setUrls] = useState<URLItem[]>([]);
   const [selected, setSelected] = useState<number[]>([]);
   const [search, setSearch] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(1);
   const [size] = useState(10);
   const [total, setTotal] = useState(0);
@@ -26,7 +27,7 @@ export default function DashboardPage() {
   async function loadURLs() {
     setLoading(true);
     try {
-      const data = await fetchURLs(page, size, search.trim() || undefined);
+      const data = await fetchURLs(page, size, searchQuery.trim() || undefined);
       setUrls(data.data);
       setTotal(data.total);
     } finally {
@@ -39,7 +40,7 @@ export default function DashboardPage() {
     // const timer = setInterval(loadURLs, 3000);
     // return () => clearInterval(timer);
     // eslint-disable-next-line
-  }, [page, search]);
+  }, [page, searchQuery]);
 
   async function handleAddURL(e: React.FormEvent) {
     e.preventDefault();
@@ -67,6 +68,11 @@ export default function DashboardPage() {
 
   function handleRowClick(id: number) {
     navigate(`/details/${id}`);
+  }
+
+  function handleSearch() {
+    setSearchQuery(search);
+    setPage(1); // Reset to first page when searching
   }
 
   return (
@@ -114,7 +120,7 @@ export default function DashboardPage() {
           />
           <button
             className="flex items-center gap-1 px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
-            onClick={() => loadURLs()}
+            onClick={handleSearch}
           >
             Search
           </button>

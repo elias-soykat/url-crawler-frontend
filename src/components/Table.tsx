@@ -190,7 +190,7 @@ export function Table({
         </tbody>
       </table>
       {/* Pagination */}
-      <div className="flex items-center justify-between p-2">
+      <div className="flex items-center justify-between p-2 mt-4">
         <span>
           Page {page} of {Math.max(1, Math.ceil(total / size))}
         </span>
