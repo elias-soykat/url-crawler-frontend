@@ -27,7 +27,11 @@ export default function SignupPage() {
       login(token);
       navigate("/login");
     } catch (err) {
-      setError("Invalid credentials");
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("An unknown error occurred");
+      }
     }
   }
 
