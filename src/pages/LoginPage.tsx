@@ -38,7 +38,11 @@ export default function LoginPage() {
         login(token);
         navigate("/dashboard");
       } catch (error) {
-        setFieldError("general", "Invalid credentials");
+        if (error instanceof Error) {
+          setFieldError("general", error.message);
+        } else {
+          setFieldError("general", "An unknown error occurred");
+        }
       }
     },
   });
