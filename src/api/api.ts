@@ -1,8 +1,15 @@
+import { AxiosError } from "axios";
+import {
+  BulkActionRequest,
+  LoginFormData,
+  SignupFormData,
+  URLFormData,
+} from "../types";
 import axios from "./axios";
 
 export type URLStatus = "queued" | "running" | "done" | "error";
 
-export type URLItem = {
+export interface URLItem {
   id: number;
   address: string;
   title: string;
@@ -17,43 +24,110 @@ export type URLItem = {
   error: string;
   created_at: string;
   updated_at: string;
-};
+}
 
-export type URLListResponse = {
+export interface URLListResponse {
   data: URLItem[];
   page: number;
   size: number;
   total: number;
-};
-
-export async function login(username: string, password: string) {
-  const res = await axios.post("/auth/login", { username, password });
-  return res.data.token;
 }
 
-export async function signup(username: string, password: string) {
-  const res = await axios.post("/auth/signup", { username, password });
-  return res.data.token;
+export interface AuthResponse {
+  token: string;
+  user?: {
+    id: number;
+    username: string;
+  };
 }
 
-export async function addURL(address: string) {
-  const res = await axios.post("/urls", { address });
-  return res.data;
+// Custom error class for API errors
+export class APIError extends Error {
+  constructor(
+    message: string,
+    public code?: string,
+    public field?: string,
+    public statusCode?: number
+  ) {
+    super(message);
+    this.name = "APIError";
+  }
 }
 
-export async function fetchURLs(page: number, size: number, q?: string) {
-  const params: any = { page, size };
-  if (q && q.trim()) params.q = q.trim();
-  const res = await axios.get<URLListResponse>("/urls", { params });
-  return res.data;
+// Error handler utility
+function handleApiError(error: unknown): never {
+  if (error instanceof AxiosError) {
+    const apiError = error.response?.data?.error || error.message;
+    const statusCode = error.response?.status;
+    throw new APIError(apiError, error.code, undefined, statusCode);
+  }
+  if (error instanceof Error) {
+    throw new APIError(error.message);
+  }
+  throw new APIError("An unexpected error occurred");
 }
 
-export async function fetchURLDetails(id: number | string) {
-  const res = await axios.get<URLItem>("/urls/" + id);
-  return res.data;
+export async function login(credentials: LoginFormData): Promise<string> {
+  try {
+    const res = await axios.post<AuthResponse>("/auth/login", credentials);
+    return res.data.token;
+  } catch (error: unknown) {
+    handleApiError(error);
+  }
 }
 
-export async function bulkAction(action: "rerun" | "delete", ids: number[]) {
-  const res = await axios.post("/urls/bulk", { action, ids });
-  return res.data;
+export async function signup(credentials: SignupFormData): Promise<string> {
+  try {
+    const res = await axios.post<AuthResponse>("/auth/signup", credentials);
+    return res.data.token;
+  } catch (error: unknown) {
+    handleApiError(error);
+  }
+}
+
+export async function addURL(urlData: URLFormData): Promise<URLItem> {
+  try {
+    const res = await axios.post<URLItem>("/urls", urlData);
+    return res.data;
+  } catch (error: unknown) {
+    handleApiError(error);
+  }
+}
+
+export async function fetchURLs(
+  page: number,
+  size: number,
+  query?: string
+): Promise<URLListResponse> {
+  try {
+    const params: Record<string, any> = { page, size };
+    if (query?.trim()) {
+      params.q = query.trim();
+    }
+    const res = await axios.get<URLListResponse>("/urls", { params });
+    return res.data;
+  } catch (error: unknown) {
+    handleApiError(error);
+  }
+}
+
+export async function fetchURLDetails(id: number | string): Promise<URLItem> {
+  try {
+    const res = await axios.get<URLItem>(`/urls/${id}`);
+    return res.data;
+  } catch (error: unknown) {
+    handleApiError(error);
+  }
+}
+
+export async function bulkAction(
+  action: BulkActionRequest["action"],
+  ids: number[]
+): Promise<void> {
+  try {
+    const payload: BulkActionRequest = { action, ids };
+    await axios.post("/urls/bulk", payload);
+  } catch (error: unknown) {
+    handleApiError(error);
+  }
 }

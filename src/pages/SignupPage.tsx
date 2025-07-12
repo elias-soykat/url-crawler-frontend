@@ -23,7 +23,7 @@ export default function SignupPage() {
         return;
       }
 
-      const token = await signupApi(username, password);
+      const token = await signupApi({ username, password });
       login(token);
       navigate("/login");
     } catch (err) {

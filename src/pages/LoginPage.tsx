@@ -1,31 +1,47 @@
-import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { login as loginApi } from "../api/api";
 import { useAuth } from "../context/AuthContext";
+import { useForm } from "../hooks/useForm";
+import { LoginFormData } from "../types";
+
+function validateLogin(values: LoginFormData) {
+  const errors: Record<string, string> = {};
+
+  if (!values.username) {
+    errors.username = "Username is required";
+  }
+
+  if (!values.password) {
+    errors.password = "Password is required";
+  }
+
+  return errors;
+}
 
 export default function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    try {
-      if (!username || !password) {
-        setError("Username and password are required");
-        return;
+  const {
+    values,
+    errors,
+    isSubmitting,
+    handleChange,
+    handleSubmit,
+    setFieldError,
+  } = useForm({
+    initialValues: { username: "", password: "" },
+    validate: validateLogin,
+    onSubmit: async (credentials: LoginFormData) => {
+      try {
+        const token = await loginApi(credentials);
+        login(token);
+        navigate("/dashboard");
+      } catch (error) {
+        setFieldError("general", "Invalid credentials");
       }
-
-      const token = await loginApi(username, password);
-
-      login(token);
-      navigate("/dashboard");
-    } catch (err) {
-      setError("Invalid credentials");
-    }
-  }
+    },
+  });
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-200">
@@ -34,35 +50,59 @@ export default function LoginPage() {
         className="bg-white shadow p-6 rounded w-full max-w-sm"
       >
         <h2 className="text-2xl font-bold mb-5 text-center">Login</h2>
+
         <div className="mb-4">
-          <label className="block text-sm font-medium mb-1">Username</label>
+          <label htmlFor="username" className="block text-sm font-medium mb-1">
+            Username
+          </label>
           <input
+            id="username"
+            name="username"
             className="w-full border border-gray-300 rounded px-3 py-2 text-sm"
-            value={username}
+            value={values.username}
             placeholder="Enter username"
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={handleChange}
+            disabled={isSubmitting}
             autoFocus
           />
+          {errors.username && (
+            <div className="mt-1 text-red-600 text-sm">{errors.username}</div>
+          )}
         </div>
+
         <div className="mb-4">
-          <label className="block text-sm font-medium mb-1">Password</label>
+          <label htmlFor="password" className="block text-sm font-medium mb-1">
+            Password
+          </label>
           <input
+            id="password"
+            name="password"
             type="password"
             className="w-full border border-gray-300 rounded px-3 py-2 text-sm"
-            value={password}
+            value={values.password}
             placeholder="Enter password"
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={handleChange}
+            disabled={isSubmitting}
           />
+          {errors.password && (
+            <div className="mt-1 text-red-600 text-sm">{errors.password}</div>
+          )}
         </div>
-        {error && (
-          <div className="my-2 pb-2 text-red-600 text-sm text-left">{error}</div>
+
+        {errors.general && (
+          <div className="my-2 pb-2 text-red-600 text-sm text-left">
+            {errors.general}
+          </div>
         )}
+
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded font-bold hover:bg-blue-700 transition"
+          disabled={isSubmitting}
+          className="w-full bg-blue-600 text-white py-2 rounded font-bold hover:bg-blue-700 transition disabled:opacity-50"
         >
-          Login
+          {isSubmitting ? "Logging in..." : "Login"}
         </button>
+
         <p className="text-sm text-center mt-4">
           Don&apos;t have an account?{" "}
           <Link

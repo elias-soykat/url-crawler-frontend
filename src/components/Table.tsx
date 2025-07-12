@@ -7,17 +7,17 @@ import {
 } from "@tanstack/react-table";
 import { URLItem } from "../api/api";
 
-type TableProps = {
-  data: URLItem[];
-  selected: number[];
-  setSelected: (ids: number[]) => void;
-  onRowClick: (id: number) => void;
-  page: number;
-  setPage: (p: number) => void;
-  size: number;
-  total: number;
-  loading: boolean;
-};
+interface TableProps {
+  readonly data: URLItem[];
+  readonly selected: number[];
+  readonly setSelected: (ids: number[]) => void;
+  readonly onRowClick: (id: number) => void;
+  readonly page: number;
+  readonly setPage: (page: number) => void;
+  readonly size: number;
+  readonly total: number;
+  readonly loading: boolean;
+}
 
 export function Table({
   data,
@@ -111,7 +111,7 @@ export function Table({
       header: () => "Status",
       cell: (info) => {
         const status = info.getValue() as string;
-        let color =
+        const color =
           status === "done"
             ? "green"
             : status === "error"
@@ -137,19 +137,24 @@ export function Table({
     pageCount: Math.ceil(total / size),
   });
 
-  if (loading)
+  if (loading) {
     return (
       <div className="flex items-center justify-center p-8">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
+        <div
+          data-testid="loading-spinner"
+          className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"
+        />
       </div>
     );
+  }
 
-  if (data.length === 0)
+  if (data.length === 0) {
     return (
       <div className="flex items-center justify-center p-6 sm:p-10">
         <h4 className="text-gray-500">No data</h4>
       </div>
     );
+  }
 
   return (
     <div className="overflow-x-auto border rounded bg-white">
@@ -157,7 +162,7 @@ export function Table({
         <thead className="bg-gray-100">
           {table.getHeaderGroups().map((hg) => (
             <tr key={hg.id}>
-              {hg.headers.map((header, i) => (
+              {hg.headers.map((header) => (
                 <th
                   key={header.id}
                   className="px-2 py-2 text-center font-medium text-sm"
@@ -180,7 +185,7 @@ export function Table({
               className="hover:bg-blue-50 cursor-pointer"
               onClick={() => onRowClick(row.original.id)}
             >
-              {row.getVisibleCells().map((cell, i) => (
+              {row.getVisibleCells().map((cell) => (
                 <td key={cell.id} className="px-2 py-2 text-sm text-center">
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
