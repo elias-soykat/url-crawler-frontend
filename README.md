@@ -1,12 +1,12 @@
-# Sykell URL Crawler – Frontend
+# URL Crawler – Frontend
 
-A responsive React/TypeScript app to submit and analyze website URLs via the Sykell URL crawler backend.
+A responsive React/TypeScript app to submit and analyze website URLs via the URL crawler backend.
 
 ## Features
 
 - Login via JWT (POST `/auth/login`)
 - Submit URLs for crawling
-- Real-time crawl status (Queued, Running, Done, Error)
+- Real-time crawl status (Queued, Running, Done, Error) (REAL-TIME FEATURE IS UNDER DEVELOPMENT)
 - Dashboard: sortable, paginated, filterable table
 - Details: donut/bar chart (internal/external links) & broken link list
 - Bulk actions: rerun/delete
@@ -30,9 +30,9 @@ A responsive React/TypeScript app to submit and analyze website URLs via the Syk
 ### 1. Clone & Install
 
 ```bash
-git clone https://github.com/yourusername/sykell-url-crawler-frontend.git
-cd sykell-url-crawler-frontend
-npm install
+git clone git@github.com:elias-soykat/url-crawler-frontend.git
+cd url-crawler-frontend
+pnpm install
 ```
 
 ### 2. Configure Backend URL
@@ -42,18 +42,18 @@ npm install
 ### 3. Start Dev Server
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 ### 4. Run Tests
 
 ```bash
-npm run test
+pnpm run test
 ```
 
 ## Usage
 
-1. **Login:** Use credentials seeded in backend (`admin/adminpass`).
+1. **Signup/Login:** Create an account through the `/signup` page and login to the dashboard.
 2. **Add URL:** Enter any website URL and submit for analysis.
 3. **Dashboard:** View status and results, sort/filter/search.
 4. **Details:** Click a row for charts and broken link info.
@@ -78,7 +78,3 @@ Copy `.env.example` to `.env` and adjust as needed.
 ```
 VITE_API_URL=http://localhost:8080
 ```
-
-## License
-
-MIT
